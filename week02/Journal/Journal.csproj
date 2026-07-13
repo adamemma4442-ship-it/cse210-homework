@@ -1,11 +1,55 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 
-<Project Sdk="Microsoft.NET.Sdk">
+public class Journal
+{
+    public List<Entry> _entries = new List<Entry>();
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
+    public void AddEntry(Entry entry)
+    {
+        _entries.Add(entry);
+    }
 
-</Project>
+    public void DisplayAll()
+    {
+        foreach (Entry entry in _entries)
+        {
+            entry.Display();
+        }
+    }
+
+    public void SaveToFile(string filename)
+    {
+        using (StreamWriter output = new StreamWriter(filename))
+        {
+            foreach (Entry entry in _entries)
+            {
+                output.WriteLine($"{entry._date}|{entry._prompt}|{entry._response}");
+            }
+        }
+
+        Console.WriteLine("Journal saved successfully.");
+    }
+
+    public void LoadFromFile(string filename)
+    {
+        _entries.Clear();
+
+        string[] lines = File.ReadAllLines(filename);
+
+        foreach (string line in lines)
+        {
+            string[] parts = line.Split("|");
+
+            Entry entry = new Entry();
+            entry._date = parts[0];
+            entry._prompt = parts[1];
+            entry._response = parts[2];
+
+            _entries.Add(entry);
+        }
+
+        Console.WriteLine("Journal loaded successfully.");
+    }
+}
