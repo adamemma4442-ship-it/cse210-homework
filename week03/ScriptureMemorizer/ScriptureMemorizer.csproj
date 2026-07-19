@@ -1,11 +1,52 @@
+using System;
+using System.Collections.Generic;
 
-<Project Sdk="Microsoft.NET.Sdk">
+public class ScriptureMemorizer
+{
+    private List<Scripture> _scriptures;
+    private Random _random = new Random();
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
+    public ScriptureMemorizer()
+    {
+        _scriptures = new List<Scripture>()
+        {
+            new Scripture(
+                new Reference("John", 3, 16),
+                "For God so loved the world that he gave his only begotten Son that whosoever believeth in him should not perish but have everlasting life."
+            ),
 
-</Project>
+            new Scripture(
+                new Reference("Proverbs", 3, 5, 6),
+                "Trust in the Lord with all thine heart and lean not unto thine own understanding. In all thy ways acknowledge him and he shall direct thy paths."
+            ),
+
+            new Scripture(
+                new Reference("Psalm", 23, 1),
+                "The Lord is my shepherd I shall not want."
+            )
+        };
+    }
+
+    public void Start()
+    {
+        Scripture scripture = _scriptures[_random.Next(_scriptures.Count)];
+
+        while (true)
+        {
+            Console.Clear();
+            Console.WriteLine(scripture.GetDisplayText());
+
+            if (scripture.IsCompletelyHidden())
+                break;
+
+            Console.WriteLine();
+            Console.Write("Press Enter to continue or type 'quit': ");
+            string input = Console.ReadLine();
+
+            if (input.ToLower() == "quit")
+                break;
+
+            scripture.HideRandomWords(3);
+        }
+    }
+}
